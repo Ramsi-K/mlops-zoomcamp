@@ -35,6 +35,7 @@ terraform.rc
 
 *.json
 .env
+*.yaml
 
 # ide
 .vscode/
@@ -47,3 +48,11 @@ __pycache__/
 # dbt
 target/
 logs/
+
+# data
+*.parquet
+
+# models
+*.pkl
+*.bin
+*.xgb
