@@ -1,9 +1,15 @@
 import os
 import pickle
 import click
+import mlflow
 
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import root_mean_squared_error
+
+mlflow.set_tracking_uri("http://127.0.0.1:5000")
+# mlflow.set_tracking_uri("sqlite:///mlflow.db")
+mlflow.set_experiment("nyc-taxi-homework")
+mlflow.sklearn.autolog(log_datasets=False)
 
 
 def load_pickle(filename: str):
@@ -19,14 +25,20 @@ def load_pickle(filename: str):
 )
 def run_train(data_path: str):
 
-    X_train, y_train = load_pickle(os.path.join(data_path, "train.pkl"))
-    X_val, y_val = load_pickle(os.path.join(data_path, "val.pkl"))
+    with mlflow.start_run():
+        mlflow.set_tag("developer", "ramsi")
+        mlflow.log_param("train-data-path", "output/train.pkl")
+        mlflow.log_param("valid-data-path", "output/val.pkl")
 
-    rf = RandomForestRegressor(max_depth=10, random_state=0)
-    rf.fit(X_train, y_train)
-    y_pred = rf.predict(X_val)
+        X_train, y_train = load_pickle(os.path.join(data_path, "train.pkl"))
+        X_val, y_val = load_pickle(os.path.join(data_path, "val.pkl"))
 
-    rmse = root_mean_squared_error(y_val, y_pred)
+        rf = RandomForestRegressor(max_depth=10, random_state=0)
+        rf.fit(X_train, y_train)
+        y_pred = rf.predict(X_val)
+
+        rmse = root_mean_squared_error(y_val, y_pred)
+        mlflow.log_metric("rmse", rmse)
 
 
 if __name__ == "__main__":
