@@ -12,7 +12,7 @@
 
 ## [3.5 Deploying: Running operations in production](3.5/README.md)
 
-## [3.6 Homework](../cohorts/2024/03-orchestration/homework.md).
+## [3.6 Homework](homework.md).
 
 ## Quickstart
 
